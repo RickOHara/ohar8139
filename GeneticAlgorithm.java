@@ -40,7 +40,7 @@ public class GeneticAlgorithm {
 	//generates a new generation of chromosomes based on the parents 
 		//chromosome created by the crossover function
 	//this fulfills the mutation part of the project
-	private Vector<Chromosome> generateNewGeneration(Chromosome parent){
+	private Generation generateNewGeneration(Chromosome parent){
 		
 		double mutPer = 0.01;//percentage range of possible genetic mutations
 		
@@ -52,7 +52,7 @@ public class GeneticAlgorithm {
 		double pPositiveVal = parent.getPositiveWeightValue();
 		double pEnergyVal = parent.getEnergyToMoneyConversionValue();
 		
-		Vector<Chromosome> nextGeneration = new Vector<Chromosome> (CHROM_PER_GEN);
+		Generation nextGeneration = new Generation();
 		
 		for(int i=0; i<CHROM_PER_GEN; i++){
 			
@@ -81,5 +81,16 @@ public class GeneticAlgorithm {
 		return min + (randomGenerator.nextDouble() * (max - min));
 	}
 	
+	/**
+	 * Fitness function for gauging how a client has performed.
+	 * @param chromosome
+	 */
+	private void fitnessFunction(Chromosome chromosome){
+		
+	}
+	
+	private void selectionFunction(Generation generation){
+		
+	}
 	
 }
