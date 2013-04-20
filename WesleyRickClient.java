@@ -42,7 +42,7 @@ public class WesleyRickClient extends TeamClient {
 	HashMap <UUID, Ship> asteroidToShipMap;
 	boolean aimingForBase;
 	Graph astarGraph;
-	Map <KnowledgeEnum, Boolean> knowledgeValues;
+	//Map <KnowledgeEnum, Boolean> knowledgeValues;
 
 	/**
 	 * Assigns ships to asteroids and beacons, as described above
@@ -62,7 +62,7 @@ public class WesleyRickClient extends TeamClient {
 				//Get the Knowledge Representation Values
 				//I set 1000 as a cost of the base, Need to find the API that will dynamically 
 				//Get this value.
-				knowledgeValues = getKnowledgeValues(space, ship, 1000);
+				//knowledgeValues = getKnowledgeValues(space, ship, 1000);
 				
 				//Print the values of the hash map for the knowledge values
 				//for (Map.Entry<KnowledgeEnum, Boolean> entry : knowledgeValues.entrySet()){
@@ -372,7 +372,7 @@ public class WesleyRickClient extends TeamClient {
 	public void initialize(Toroidal2DPhysics space) {
 		asteroidToShipMap = new HashMap<UUID, Ship>();
 		astarGraph = new Graph();
-		knowledgeValues = new HashMap<KnowledgeEnum, Boolean>();
+		//knowledgeValues = new HashMap<KnowledgeEnum, Boolean>();
 	}
 
 	/**
@@ -425,6 +425,7 @@ public class WesleyRickClient extends TeamClient {
 	 * @param costOfBase
 	 * @return Map<KnowledgeEnum, Boolean>
 	 */
+	/*
 	public Map<KnowledgeEnum, Boolean> getKnowledgeValues(Toroidal2DPhysics space, Ship ship, int costOfBase){
 		HashMap<KnowledgeEnum, Boolean> values = new HashMap<KnowledgeEnum, Boolean>();
 		
@@ -442,5 +443,6 @@ public class WesleyRickClient extends TeamClient {
 		//Return the map for use
 		return values;
 	}
+	*/
 
 }
