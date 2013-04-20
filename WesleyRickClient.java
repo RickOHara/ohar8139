@@ -23,6 +23,7 @@ import spacewar2.shadows.Shadow;
 import spacewar2.simulator.Toroidal2DPhysics;
 import spacewar2.utilities.Position;
 import ohar8139.ActionEvaluator;
+import ohar8139.GeneticAlgorithm;
 
 /**
  * Collects nearby asteroids and brings them to the base, picks up beacons as needed for energy
@@ -373,6 +374,8 @@ public class WesleyRickClient extends TeamClient {
 	public void initialize(Toroidal2DPhysics space) {
 		asteroidToShipMap = new HashMap<UUID, Ship>();
 		astarGraph = new Graph();
+		
+		new GeneticAlgorithm(true);
 		
 		//populate the knowledge values based on the current chromosome
 		//TODO: use genetic algorithm to determine which Chromosome should be used
