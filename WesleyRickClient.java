@@ -18,6 +18,7 @@ import spacewar2.actions.DoNothingAction;
 import spacewar2.actions.SpacewarAction;
 import spacewar2.actions.SpacewarPurchaseEnum;
 import spacewar2.clients.ExampleKnowledge;
+import spacewar2.clients.ImmutableTeamInfo;
 import spacewar2.clients.TeamClient;
 import spacewar2.objects.Asteroid;
 import spacewar2.objects.Base;
@@ -396,6 +397,7 @@ public class WesleyRickClient extends TeamClient {
 
 		try { 
 			generation = (Generation) xstream.fromXML(new File("ohar8139/generation.xml"));
+			System.out.println("Generation size" + generation.getGeneration().size());
 		} catch (XStreamException e) {
 			// if you get an error, handle it other than a null pointer because
 			// the error will happen the first time you run
@@ -414,6 +416,20 @@ public class WesleyRickClient extends TeamClient {
 	@Override
 	public void shutDown(Toroidal2DPhysics space) {
 		//Add current client to the generation
+		//But first add its money to the gene, this will be used to base performance
+		double MoneyCollected = -1;
+		Set<ImmutableTeamInfo> allTeams = space.getTeamInfo();
+		for (ImmutableTeamInfo team : allTeams){
+			System.out.println(team.getTeamName().equalsIgnoreCase("Wesley and Rick"));
+			System.out.println(team.getTeamName());
+			if(team.getTeamName().equalsIgnoreCase("WesandRick")){
+				MoneyCollected = team.getScore();
+				
+			}
+		}
+		
+		
+		chromosome.setMoneyCollected(MoneyCollected);
 		generation.add(chromosome);
 		
 		XStream xstream = new XStream();
