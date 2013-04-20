@@ -56,11 +56,19 @@ public class GeneticAlgorithm {
 		
 		for(int i=0; i<CHROM_PER_GEN; i++){
 			
-			double cFuelVal = getDoubleInRange(pFuelVal + pFuelVal*mutPer, pFuelVal - pFuelVal*mutPer);
+			//randomly generate child genes based on parent and mutation percentage
+			double cFuelVal = getDoubleInRange(pFuelVal - pFuelVal*mutPer, pFuelVal + pFuelVal*mutPer);
+			int cShipVal = getIntInRange(pShipVal - (int)(pShipVal*mutPer),pShipVal + (int)(pShipVal*mutPer));
+			int cNearbyVal = getIntInRange(pNearbyVal - (int)(pNearbyVal*mutPer),pNearbyVal + (int)(pNearbyVal*mutPer));
+			int cMoneyVal = getIntInRange(pMoneyVal - (int)(pMoneyVal*mutPer),pMoneyVal + (int)(pMoneyVal*mutPer));
+			double cPositiveVal = getDoubleInRange(pPositiveVal - pPositiveVal*mutPer, pPositiveVal + pPositiveVal*mutPer);
+			double cEnergyVal = getDoubleInRange(pEnergyVal - pEnergyVal*mutPer, pEnergyVal + pEnergyVal*mutPer);
 			
+			nextGeneration.add(new Chromosome(cFuelVal, cShipVal, cNearbyVal, cMoneyVal, 
+					cPositiveVal, cEnergyVal));
 		}
 		
-		return null;
+		return nextGeneration;
 	}
 	
 	private int getIntInRange(int min, int max){
