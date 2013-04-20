@@ -2,13 +2,12 @@ package ohar8139;
 
 public class Chromosome {
 
-	//tracks:
-	private double lowFuelValue;//low fuel value
-	private int shipInRangeValue;//ship in range
-	private int nearbyValue;//nearby value
-	private int tooMuchMoneyValue;//too much money
-	private double positiveWeightValue;//positive weight factor
-	private double energyToMoneyConversionValue;//energy/money conversion value
+	private double lowFuelValue;
+	private int shipInRangeValue;
+	private int nearbyValue;
+	private int tooMuchMoneyValue;
+	private double positiveWeightValue;
+	private double energyToMoneyConversionValue;
 
 	//all values are initialized on object construction and cannot be mutated
 	public Chromosome (double lowFuelVal, int shipInRangeVal, int nearbyVal, int tooMuchMoneyVal,
@@ -27,15 +26,15 @@ public class Chromosome {
 		return lowFuelValue;
 	}
 
-	public double getShipInRangeValue() {
+	public int getShipInRangeValue() {
 		return shipInRangeValue;
 	}
 
-	public double getnearbyValue() {
+	public int getNearbyValue() {
 		return nearbyValue;
 	}
 
-	public double getTooMuchMoneyValue() {
+	public int getTooMuchMoneyValue() {
 		return tooMuchMoneyValue;
 	}
 	

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
+import ohar8139.Chromosome;
 import spacewar2.actions.DoNothingAction;
 import spacewar2.actions.SpacewarAction;
 import spacewar2.actions.SpacewarPurchaseEnum;
@@ -43,6 +43,7 @@ public class WesleyRickClient extends TeamClient {
 	boolean aimingForBase;
 	Graph astarGraph;
 	//Map <KnowledgeEnum, Boolean> knowledgeValues;
+	KnowledgeValues knowledgeValues;
 
 	/**
 	 * Assigns ships to asteroids and beacons, as described above
@@ -308,7 +309,7 @@ public class WesleyRickClient extends TeamClient {
 	 */
 	private SpacewarObject chooseActionUsingHeuristic(Toroidal2DPhysics space, Ship ship){
 		
-		ActionEvaluator eval = new ActionEvaluator(space, ship);
+		ActionEvaluator eval = new ActionEvaluator(space, ship, knowledgeValues);
 		
 		Asteroid nearestA = pickNearestMineableAsteroid(space, ship);
 		double asteroidValue = eval.evaluateMoveToAsteroid(nearestA);
@@ -372,7 +373,11 @@ public class WesleyRickClient extends TeamClient {
 	public void initialize(Toroidal2DPhysics space) {
 		asteroidToShipMap = new HashMap<UUID, Ship>();
 		astarGraph = new Graph();
-		//knowledgeValues = new HashMap<KnowledgeEnum, Boolean>();
+		
+		//populate the knowledge values based on the current chromosome
+		//TODO: use genetic algorithm to determine which Chromosome should be used
+		Chromosome testChrom = new Chromosome(2000.0, 400, 300, 1000, 5.0, 0.04);
+		knowledgeValues = new KnowledgeValues(testChrom); //HashMap<KnowledgeEnum, Boolean>();
 	}
 
 	/**

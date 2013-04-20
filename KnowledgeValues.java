@@ -2,7 +2,7 @@ package ohar8139;
 
 //import java.util.ArrayList;
 import java.util.Set;
-
+import ohar8139.Chromosome;
 import spacewar2.objects.Asteroid;
 import spacewar2.objects.Base;
 import spacewar2.objects.Beacon;
@@ -35,12 +35,37 @@ public class KnowledgeValues {
 	 * Class value literals for the distances to determine nearby, or far away,
 	 * or the values for money and energy.
 	 */
-	private static final double LowFuelValue = 2000.0;
-	private static final int ShipInRange = 400;
-	private static final int NearbyValue = 150;
+	private double lowFuelValue;// = 2000.0;
+	private int shipInRange;// = 400;
+	private int nearbyValue;// = 150;
 	//private static final int FarAwayValue = 600;
-	private static final int TooMuchMoney = 500;//
+	private int tooMuchMoney;// = 500;//
 
+	//converts energy to money values, needed since all returned evaluations are in units of currency
+	private double energyToMoneyConversionFactor;
+
+	//amount to increase the evaluation value by for each positive factor
+	private double positiveWeightFactor;
+	
+	public KnowledgeValues(Chromosome chrom){
+		
+		this.lowFuelValue = chrom.getLowFuelValue();
+		this.shipInRange = chrom.getShipInRangeValue();
+		this.nearbyValue = chrom.getNearbyValue();
+		this.tooMuchMoney = chrom.getTooMuchMoneyValue();
+		this.energyToMoneyConversionFactor = chrom.getEnergyToMoneyConversionValue();
+		this.positiveWeightFactor = chrom.getPositiveWeightValue();
+	}
+
+	
+	public double getEnergyToMoneyConversionFactor() {
+		return energyToMoneyConversionFactor;
+	}
+
+	public double getPositiveWeightFactor() {
+		return positiveWeightFactor;
+	}
+	
 	/**
 	 * isLowOnFuel (space, ship)
 	 * This function will determine whether or not the ship is low on fuel and 
@@ -50,10 +75,10 @@ public class KnowledgeValues {
 	 * @param ship
 	 * @return boolean
 	 */
-	public static boolean isLowOnFuel(Toroidal2DPhysics space, Ship ship){
+	public boolean isLowOnFuel(Toroidal2DPhysics space, Ship ship){
 		//Determine if the ship is low on energy and needs to refuel
 		double energy = ship.getEnergy();
-		if(energy < LowFuelValue){
+		if(energy < lowFuelValue){
 			return true;
 		}
 		else return false;
@@ -73,7 +98,7 @@ public class KnowledgeValues {
 	 * @param space
 	 * @return boolean
 	 */
-	public static boolean isNearbyBeacon(Toroidal2DPhysics space, Ship ship){
+	public boolean isNearbyBeacon(Toroidal2DPhysics space, Ship ship){
 		Set<Beacon> beacons = space.getBeacons();
 		
 		//Loop through all the beacons, then use the distance formula to determine
@@ -96,7 +121,7 @@ public class KnowledgeValues {
 //	    			(yCenter - yBeacon) * (yCenter - yBeacon));
 			
 			//It it is less than NearbyValue and line is free
-			if(distance <= NearbyValue && AStarSearch.isFreeLine(ship.getPosition(), beaconPosition , space)){
+			if(distance <= nearbyValue && AStarSearch.isFreeLine(ship.getPosition(), beaconPosition , space)){
 				return true;
 			}
 		}
@@ -112,7 +137,7 @@ public class KnowledgeValues {
 	 * @param ship
 	 * @return boolean
 	 */
-	public static boolean isNearbyEnemyShip(Toroidal2DPhysics space, Ship ship){
+	public boolean isNearbyEnemyShip(Toroidal2DPhysics space, Ship ship){
 		Set<Ship> ships = space.getShips();
 		
 		//Loop through all the ships, then use the distance formula to determine
@@ -136,7 +161,7 @@ public class KnowledgeValues {
 //						(yCenter - yShip) * (yCenter - yShip));
 
 				//It it is less than NearbyValue & Line is free
-				if(distance <= ShipInRange && AStarSearch.isFreeLine(ship.getPosition(),
+				if(distance <= shipInRange && AStarSearch.isFreeLine(ship.getPosition(),
 						shipPosition, space)){
 					return true;
 				}
@@ -156,7 +181,7 @@ public class KnowledgeValues {
 	 * @param ship
 	 * @return boolean
 	 */
-	public static boolean isNearbyMineableAsteroid(Toroidal2DPhysics space, Ship ship){
+	public boolean isNearbyMineableAsteroid(Toroidal2DPhysics space, Ship ship){
 		Set<Asteroid> asteroids = space.getAsteroids();
 		
 		//Loop through all the ships, then use the distance formula to determine
@@ -181,7 +206,7 @@ public class KnowledgeValues {
 //						(yCenter - yAsteroid) * (yCenter - yAsteroid));
 
 				//It it is less than NearbyValue & Line is free
-				if(distance <= NearbyValue /*&& AStarSearch.isFreeLine(ship.getPosition(),
+				if(distance <= nearbyValue /*&& AStarSearch.isFreeLine(ship.getPosition(),
 						asteroidPosition, space)*/){
 					return true;
 				}
@@ -201,7 +226,7 @@ public class KnowledgeValues {
 	 * @param ship
 	 * @return
 	 */
-	public static boolean isNearbyBase(Toroidal2DPhysics space, Ship ship){
+	public boolean isNearbyBase(Toroidal2DPhysics space, Ship ship){
 		Set<Base> bases = space.getBases();
 		
 		//Loop through all the ships, then use the distance formula to determine
@@ -226,7 +251,7 @@ public class KnowledgeValues {
 //						(yCenter - yBase) * (yCenter - yBase));
 
 				//It it is less than NearbyValue & Line is free
-				if(distance <= NearbyValue && AStarSearch.isFreeLine(ship.getPosition(),
+				if(distance <= nearbyValue && AStarSearch.isFreeLine(ship.getPosition(),
 						basePosition, space)){
 					return true;
 				}
@@ -244,7 +269,7 @@ public class KnowledgeValues {
 	 * @param ship
 	 * @return
 	 */
-	public static boolean needToBuyBullets(Toroidal2DPhysics space, Ship ship){
+	public boolean needToBuyBullets(Toroidal2DPhysics space, Ship ship){
 		return false;
 	}
 	
@@ -261,7 +286,7 @@ public class KnowledgeValues {
 	 * @param ship
 	 * @return
 	 */
-	public static boolean needToBuyBase(Toroidal2DPhysics space, Ship ship, int currentNewBaseCost){
+	public boolean needToBuyBase(Toroidal2DPhysics space, Ship ship, int currentNewBaseCost){
 		int money = ship.getMoney();
 		
 		if(!isNearbyBase(space, ship) && money > currentNewBaseCost){
@@ -283,7 +308,7 @@ public class KnowledgeValues {
 	 * @param currentNewBaseCost
 	 * @return
 	 */
-	public static boolean hasEnoughMoneyToBuyBase(Toroidal2DPhysics space, Ship ship, int currentNewBaseCost){
+	public boolean hasEnoughMoneyToBuyBase(Toroidal2DPhysics space, Ship ship, int currentNewBaseCost){
 		int money = ship.getMoney();
 		
 		if(money > currentNewBaseCost){
@@ -301,9 +326,9 @@ public class KnowledgeValues {
 	 * @param ship
 	 * @return
 	 */
-	public static boolean hasLargeMoneySum(Toroidal2DPhysics space, Ship ship){
+	public boolean hasLargeMoneySum(Toroidal2DPhysics space, Ship ship){
 		
-		if(ship.getMoney() >= TooMuchMoney){
+		if(ship.getMoney() >= tooMuchMoney){
 			return true;
 		}
 		else return false;

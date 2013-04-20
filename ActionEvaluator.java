@@ -23,19 +23,23 @@ public class ActionEvaluator {
 	//reference to the ship that is to take an action
 	Ship ship;
 	
+	//reference to the knowledge values populated via the chromosome
+	KnowledgeValues values;
+	
 	//converts energy to money values, needed since all returned evaluations are in units of currency
-	final double ENERGY_TO_MONEY_CONVERSION_FACTOR = 0.04;//25 energy = 1 currency
+	//final double ENERGY_TO_MONEY_CONVERSION_FACTOR = 0.04;//25 energy = 1 currency
 	
 	//amount to increase the evaluation value by for each positive factor
-	final double POSITIVE_WEIGHT_FACTOR = 5.0;//1.33;
+	//final double POSITIVE_WEIGHT_FACTOR = 5.0;//1.33;
 	
 	//cost of purchasing a new base
 	//TODO: this needs to be synched with the API's cost for bases when it becomes available
 	final int NEW_BASE_COST = 500;
 	
-	public ActionEvaluator(Toroidal2DPhysics space, Ship ship){
+	public ActionEvaluator(Toroidal2DPhysics space, Ship ship, KnowledgeValues vals){
 		this.space = space;
 		this.ship = ship;
+		this.values = vals;
 	}
 	
 	/**
@@ -63,7 +67,7 @@ public class ActionEvaluator {
 	public double evaluateBeaconMove(Beacon beacon){
 		
 		int beaconEnergy = Beacon.BEACON_ENERGY_BOOST;
-		double energyValue = beaconEnergy * ENERGY_TO_MONEY_CONVERSION_FACTOR;
+		double energyValue = beaconEnergy * values.getEnergyToMoneyConversionFactor();
 		
 		double distanceToBeacon = this.space.findShortestDistance(this.ship.getPosition(), beacon.getPosition());
 		
@@ -127,7 +131,7 @@ public class ActionEvaluator {
 		double weight = 1.0;
 		
 		//positive factors are isNearbyMineableAsteroid
-		if(KnowledgeValues.isNearbyMineableAsteroid(this.space, this.ship)) weight *= POSITIVE_WEIGHT_FACTOR;
+		if(values.isNearbyMineableAsteroid(this.space, this.ship)) weight *= values.getPositiveWeightFactor();
 		
 		return weight;
 	}
@@ -143,7 +147,7 @@ public class ActionEvaluator {
 		double weight = 1.0;
 		
 		//positive factors are isNearbyEnemyShip
-		if(KnowledgeValues.isNearbyEnemyShip(this.space, this.ship)) weight *= POSITIVE_WEIGHT_FACTOR;
+		if(values.isNearbyEnemyShip(this.space, this.ship)) weight *= values.getPositiveWeightFactor();
 		
 		return weight;
 	}
@@ -160,8 +164,8 @@ public class ActionEvaluator {
 		
 		//positive factors are islowOnFuel and isNearbyBase and hasLargeMoneySum
 		//if(KnowledgeValues.isLowOnFuel(this.space, this.ship)) weight *= POSITIVE_WEIGHT_FACTOR;//took out, favored base too much
-		if(KnowledgeValues.isNearbyBase(this.space, this.ship)) weight *= POSITIVE_WEIGHT_FACTOR;
-		if(KnowledgeValues.hasLargeMoneySum(this.space, this.ship)) weight *= POSITIVE_WEIGHT_FACTOR;
+		if(values.isNearbyBase(this.space, this.ship)) weight *= values.getPositiveWeightFactor();
+		if(values.hasLargeMoneySum(this.space, this.ship)) weight *= values.getPositiveWeightFactor();
 		
 		return weight;
 	}
@@ -177,8 +181,8 @@ public class ActionEvaluator {
 		double weight = 1.0;
 		
 		//positive factors are islowOnFuel and isNearbyBeacon
-		if(KnowledgeValues.isLowOnFuel(this.space, this.ship)) weight *= POSITIVE_WEIGHT_FACTOR;
-		if(KnowledgeValues.isNearbyBeacon(this.space, this.ship)) weight *= POSITIVE_WEIGHT_FACTOR;
+		if(values.isLowOnFuel(this.space, this.ship)) weight *= values.getPositiveWeightFactor();
+		if(values.isNearbyBeacon(this.space, this.ship)) weight *= values.getPositiveWeightFactor();
 		
 		return weight;
 		
@@ -195,8 +199,8 @@ public class ActionEvaluator {
 		double weight = 1.0;
 		
 		//positive factors are islowOnFuel and hasLargeMoneySum
-		if(KnowledgeValues.isLowOnFuel(this.space, this.ship)) weight *= POSITIVE_WEIGHT_FACTOR;
-		if(KnowledgeValues.hasLargeMoneySum(this.space, this.ship)) weight *= POSITIVE_WEIGHT_FACTOR;
+		if(values.isLowOnFuel(this.space, this.ship)) weight *= values.getPositiveWeightFactor();
+		if(values.hasLargeMoneySum(this.space, this.ship)) weight *= values.getPositiveWeightFactor();
 		
 		return weight;
 	}
