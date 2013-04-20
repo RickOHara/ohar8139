@@ -50,9 +50,34 @@ public class Chromosome {
 	public double getMoneyCollected() {
 		return moneyCollected;
 	}
+	
+	//used by the genetic algorithm crossover function to implement single point crossover
+	public Number[] getGenesArray(){
+		
+		Number[] genes = new Number[6];
+		
+		genes[0] = lowFuelValue;
+		genes[1] = shipInRangeValue;
+		genes[2] = nearbyValue;
+		genes[3] = tooMuchMoneyValue;
+		genes[4] = positiveWeightValue;
+		genes[5] = energyToMoneyConversionValue;
+		
+		return genes;
+	}
 
 	public void setMoneyCollected(double moneyCollected) {
 		this.moneyCollected = moneyCollected;
+	}
+	
+	public String toString(){
+		
+		String str = "Chromosome: \n";
+		Number[] genes = getGenesArray();
+		for(int i=0; i<genes.length; i++){
+			str += "    " + genes[i] + "\n";
+		}
+		return str;
 	}
 	
 }
