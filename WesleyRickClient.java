@@ -1,15 +1,23 @@
 package ohar8139;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
+
 import ohar8139.Chromosome;
 import spacewar2.actions.DoNothingAction;
 import spacewar2.actions.SpacewarAction;
 import spacewar2.actions.SpacewarPurchaseEnum;
+import spacewar2.clients.ExampleKnowledge;
 import spacewar2.clients.TeamClient;
 import spacewar2.objects.Asteroid;
 import spacewar2.objects.Base;
@@ -40,6 +48,8 @@ import ohar8139.GeneticAlgorithm;
  * @author Wesley R. Howell
  */
 public class WesleyRickClient extends TeamClient {
+	private Chromosome chromosome = new Chromosome(0, 0, 0, 0, 0, 0);
+	
 	HashMap <UUID, Ship> asteroidToShipMap;
 	boolean aimingForBase;
 	Graph astarGraph;
@@ -388,7 +398,20 @@ public class WesleyRickClient extends TeamClient {
 	 */
 	@Override
 	public void shutDown(Toroidal2DPhysics space) {
-		// TODO Auto-generated method stub
+		XStream xstream = new XStream();
+		xstream.alias("Chromosome", Chromosome.class);
+
+		try { 
+			// if you want to compress the file, change FileOuputStream to a GZIPOutputStream
+			xstream.toXML(chromosome, new FileOutputStream(new File("ohar8139/chromosome.xml")));
+		} catch (XStreamException e) {
+			// if you get an error, handle it somehow as it means your knowledge didn't save
+			// the error will happen the first time you run
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			
+		}
 
 	}
 
