@@ -132,7 +132,48 @@ public class GeneticAlgorithm {
 		
 	}
 	
-	private void selectionFunction(Generation generation){
+	/**
+	 * Selection function two select two parents for the crossover function.
+	 * The selection is based on the total money collected. It will pull the two parents that collected
+	 * the most amount of money in the last generation.
+	 * @param generation
+	 * @return
+	 */
+	private Generation selectionFunction(Generation generation){
+		//Search Values for Selection
+		double max1 = 0;
+		double max2 = 0;
+		int indexOfMax1 = 0;
+		int indexOfMax2 = 0;
+		
+		//Find the Highest performing agent in the generation. 
+		for (int i=0; i < generation.getGeneration().size(); i++){
+			//Test to see if the current chromosome is better than the current max
+			if(generation.getGeneration().get(i).getMoneyCollected() > max1){
+				max1 = generation.getGeneration().get(i).getMoneyCollected();
+				indexOfMax1 = i;
+			}
+		}
+		
+		//Find the second highest performing agent in the generation
+		for (int i=0; i < generation.getGeneration().size(); i++){
+			//Test to see if the current chromosome is better than the current max
+			if(generation.getGeneration().get(i).getMoneyCollected() > max2 && i != indexOfMax1){
+				max2 = generation.getGeneration().get(i).getMoneyCollected();
+				indexOfMax2 = i;
+			}
+		}
+		
+		//Create the new generation with the two highest performers as parents.
+		Generation newGeneration = new Generation();
+		newGeneration.add(generation.getGeneration().get(indexOfMax1));
+		newGeneration.add(generation.getGeneration().get(indexOfMax2));
+		
+		return newGeneration;
+		
+	}
+	
+	private void crossoverFuction(Chromosome parent1, Chromosome parent2){
 		
 	}
 	
