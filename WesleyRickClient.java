@@ -386,8 +386,21 @@ public class WesleyRickClient extends TeamClient {
 		
 		//populate the knowledge values based on the current chromosome
 		//TODO: use genetic algorithm to determine which Chromosome should be used
-		Chromosome testChrom = new Chromosome(2000.0, 400, 300, 1000, 5.0, 0.04);
-		knowledgeValues = new KnowledgeValues(testChrom); //HashMap<KnowledgeEnum, Boolean>();
+		
+		XStream xstream = new XStream();
+		xstream.alias("Chromosome", Chromosome.class);
+
+		try { 
+			chromosome = (Chromosome) xstream.fromXML(new File("ohar8139/chromosome.xml"));
+		} catch (XStreamException e) {
+			// if you get an error, handle it other than a null pointer because
+			// the error will happen the first time you run
+			chromosome = new Chromosome(2000.0, 400, 300, 1000, 5.0, 0.04);
+		}
+		
+		
+		
+		knowledgeValues = new KnowledgeValues(chromosome); //HashMap<KnowledgeEnum, Boolean>();
 	}
 
 	/**
