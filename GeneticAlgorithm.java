@@ -17,10 +17,7 @@ public class GeneticAlgorithm {
 	
 	private Vector<Chromosome> chromosomes;//all chromosomes of the current generation
 	
-	//the best overall chromosome that has been found through learning
-		//this is the chromosome used by the knowledge representation if the 
-		//learning is turned off
-	private Chromosome currentBestChromosome;
+	private Chromosome bestChromosome;//the best overall chromosome that has been found through learning across all generations
 	
 	//determines whether this run should be 
 	private boolean isLearningOn;
@@ -30,13 +27,12 @@ public class GeneticAlgorithm {
 	GeneticAlgorithm(boolean shouldLearn){
 		
 		this.isLearningOn = shouldLearn;
-		
 		randomGenerator = new Random();
 		
-		//if the algorithm should be learning, run the current Chromosome
+		//TODO: read in xml data 
 		
-		//if the algorithm should not be learning (i.e. should be competitive on this run), run the best chromosome that has been found
 		
+		/*
 		//test for crossover and mutation
 		Chromosome p1 = new Chromosome(2000.0, 400, 300, 1000, 5.0, 0.04);
 		Chromosome p2 = new Chromosome(500.0, 1400, 100, 700, 5.0, 0.14);
@@ -45,7 +41,35 @@ public class GeneticAlgorithm {
 		for(Chromosome c : newGen.getGeneration()){
 			System.out.println(c);
 		}
+		*/
 		
+	}
+	
+	public Chromosome getChromosomeForKnowledgeRepresentation(){
+		if(isLearningOn) return currentChromosome;
+		return bestChromosome;
+	}
+	
+	//TODO: implement method stub
+	//called in the shutdown method of the client
+	public void analyzeResults(Toroidal2DPhysics space){
+		
+		//if learning is not on, return... nothing else needs to be done
+		if(!isLearningOn) return;
+		
+		//find how many points the team scored using the reference to space
+		
+		//compare against the bestChromosome... update bestChromosome if the current is better
+		
+		//if the currentChromosome is the last of the generation that needs to be tested,
+			//select best from the generation, crossover using the best, then generate a new generation and update the chromosomes vector
+		
+		//update the currentChromosome to prepare for the next run
+		
+		//write the generation xml to disc
+		
+		//write out the performance stats to disc (performance of generations over time)
+		//Wesley: are we using xml or text to save the results that we will be graphing?
 	}
 	
 	/**
@@ -170,10 +194,6 @@ public class GeneticAlgorithm {
 		newGeneration.add(generation.getGeneration().get(indexOfMax2));
 		
 		return newGeneration;
-		
-	}
-	
-	private void crossoverFuction(Chromosome parent1, Chromosome parent2){
 		
 	}
 	

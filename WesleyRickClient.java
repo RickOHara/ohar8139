@@ -57,6 +57,7 @@ public class WesleyRickClient extends TeamClient {
 	Graph astarGraph;
 	//Map <KnowledgeEnum, Boolean> knowledgeValues;
 	KnowledgeValues knowledgeValues;
+	GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(true);
 
 	/**
 	 * Assigns ships to asteroids and beacons, as described above
@@ -387,11 +388,11 @@ public class WesleyRickClient extends TeamClient {
 		asteroidToShipMap = new HashMap<UUID, Ship>();
 		astarGraph = new Graph();
 		
-		new GeneticAlgorithm(true);
+		//set the Chromosome based on the state of the genetic algorithm
+		Chromosome thisChrom = geneticAlgorithm.getChromosomeForKnowledgeRepresentation();
+		knowledgeValues = new KnowledgeValues(thisChrom);
 		
-		//populate the knowledge values based on the current chromosome
-		//TODO: use genetic algorithm to determine which Chromosome should be used
-		
+		//TODO: move xml parsing to the GeneticAlgorithm constructor
 		XStream xstream = new XStream();
 		xstream.alias("Generation", Generation.class);
 
@@ -404,10 +405,6 @@ public class WesleyRickClient extends TeamClient {
 			chromosome = new Chromosome(2000.0, 400, 300, 1000, 5.0, 0.04);
 			generation.add(chromosome);
 		}
-		
-		
-		
-		knowledgeValues = new KnowledgeValues(chromosome); //HashMap<KnowledgeEnum, Boolean>();
 	}
 
 	/**
@@ -415,6 +412,12 @@ public class WesleyRickClient extends TeamClient {
 	 */
 	@Override
 	public void shutDown(Toroidal2DPhysics space) {
+		
+		//perform final tasks of the genetic algorithm before shutting down
+		geneticAlgorithm.analyzeResults(space);
+		
+		
+		//TODO: move the following code inside of the GeneticAlgorithm class:
 		//Add current client to the generation
 		//But first add its money to the gene, this will be used to base performance
 		double MoneyCollected = -1;
@@ -443,7 +446,7 @@ public class WesleyRickClient extends TeamClient {
 			// the error will happen the first time you run
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			
 			
 		}
 
@@ -451,7 +454,6 @@ public class WesleyRickClient extends TeamClient {
 
 	@Override
 	public Set<Shadow> getShadows() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -477,7 +479,6 @@ public class WesleyRickClient extends TeamClient {
 	@Override
 	public Map<UUID, SpacewarPowerupEnum> getPowerups(Toroidal2DPhysics space,
 			Set<SpacewarActionableObject> actionableObjects) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
