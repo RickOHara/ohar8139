@@ -8,6 +8,7 @@ public class Chromosome {
 	private int tooMuchMoneyValue;
 	private double positiveWeightValue;
 	private double energyToMoneyConversionValue;
+	private double moneyCollected;
 
 	//all values are initialized on object construction and cannot be mutated
 	public Chromosome (double lowFuelVal, int shipInRangeVal, int nearbyVal, int tooMuchMoneyVal,
@@ -44,6 +45,14 @@ public class Chromosome {
 	
 	public double getEnergyToMoneyConversionValue() {
 		return energyToMoneyConversionValue;
+	}
+
+	public double getMoneyCollected() {
+		return moneyCollected;
+	}
+
+	public void setMoneyCollected(double moneyCollected) {
+		this.moneyCollected = moneyCollected;
 	}
 	
 }
