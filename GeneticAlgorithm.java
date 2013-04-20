@@ -1,6 +1,7 @@
 package ohar8139;
 
 import java.util.Vector;
+import spacewar2.simulator.Toroidal2DPhysics;
 
 import ohar8139.Chromosome;
 
@@ -26,8 +27,14 @@ public class GeneticAlgorithm {
 		
 		//if the algorithm should not be learning (i.e. should be competitive on this run), run the best chromosome that has been found
 		
-		//test addition to repo
 		
+	}
+	
+	//generates a new generation of chromosomes based on the parents 
+		//chromosome created by the crossover function
+	private Vector<Chromosome> generateNewGeneration(){
+		
+		return null;
 	}
 	
 }
