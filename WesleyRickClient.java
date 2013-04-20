@@ -49,6 +49,7 @@ import ohar8139.GeneticAlgorithm;
  */
 public class WesleyRickClient extends TeamClient {
 	private Chromosome chromosome = new Chromosome(0, 0, 0, 0, 0, 0);
+	private Generation generation = new Generation();
 	
 	HashMap <UUID, Ship> asteroidToShipMap;
 	boolean aimingForBase;
@@ -391,14 +392,15 @@ public class WesleyRickClient extends TeamClient {
 		//TODO: use genetic algorithm to determine which Chromosome should be used
 		
 		XStream xstream = new XStream();
-		xstream.alias("Chromosome", Chromosome.class);
+		xstream.alias("Generation", Generation.class);
 
 		try { 
-			chromosome = (Chromosome) xstream.fromXML(new File("ohar8139/chromosome.xml"));
+			generation = (Generation) xstream.fromXML(new File("ohar8139/generation.xml"));
 		} catch (XStreamException e) {
 			// if you get an error, handle it other than a null pointer because
 			// the error will happen the first time you run
 			chromosome = new Chromosome(2000.0, 400, 300, 1000, 5.0, 0.04);
+			generation.add(chromosome);
 		}
 		
 		
@@ -411,12 +413,15 @@ public class WesleyRickClient extends TeamClient {
 	 */
 	@Override
 	public void shutDown(Toroidal2DPhysics space) {
+		//Add current client to the generation
+		generation.add(chromosome);
+		
 		XStream xstream = new XStream();
-		xstream.alias("Chromosome", Chromosome.class);
+		xstream.alias("Generation", Generation.class);
 
 		try { 
 			// if you want to compress the file, change FileOuputStream to a GZIPOutputStream
-			xstream.toXML(chromosome, new FileOutputStream(new File("ohar8139/chromosome.xml")));
+			xstream.toXML(generation, new FileOutputStream(new File("ohar8139/generation.xml")));
 		} catch (XStreamException e) {
 			// if you get an error, handle it somehow as it means your knowledge didn't save
 			// the error will happen the first time you run
