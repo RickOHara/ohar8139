@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 public class Generation {
 	
+	private int GenerationNumber;
 	private ArrayList<Chromosome> generation;
 	
 	public Generation(){
 		generation = new ArrayList<Chromosome>();
+		setGenerationNumber(0);
 	}
 	
 	public Generation(ArrayList<Chromosome> genes){
@@ -24,6 +26,14 @@ public class Generation {
 
 	public void add(Chromosome c){
 		generation.add(c);
+	}
+
+	public int getGenerationNumber() {
+		return GenerationNumber;
+	}
+
+	public void setGenerationNumber(int generationNumber) {
+		GenerationNumber = generationNumber;
 	}
 	
 }

@@ -1,23 +1,33 @@
 package ohar8139;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.Random;
+import java.util.Set;
 import java.util.Vector;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
+
+import spacewar2.clients.ImmutableTeamInfo;
 import spacewar2.simulator.Toroidal2DPhysics;
 
 import ohar8139.Chromosome;
 
 public class GeneticAlgorithm {
 
+	private Generation generation = new Generation(); //all chromosomes in the current generation
 	
 	private final int CHROM_PER_GEN = 10;//number of child chromosomes to be created per generations
 	private final int RUNS_PER_CHROM = 3;//number of runs of the ladder to test each child chromosome
 	
-	private Chromosome currentChromosome;//current chromosome being tested
+	private Chromosome currentChromosome = null;//current chromosome being tested
 	private int numChromosomeRuns;//number of testing rounds that the current chromosome has been through
 	
-	private Vector<Chromosome> chromosomes;//all chromosomes of the current generation
+	//private Vector<Chromosome> chromosomes;//all chromosomes of the current generation
 	
-	private Chromosome bestChromosome;//the best overall chromosome that has been found through learning across all generations
+	private Chromosome bestChromosome = null;//the best overall chromosome that has been found through learning across all generations
 	
 	//determines whether this run should be 
 	private boolean isLearningOn;
@@ -29,19 +39,36 @@ public class GeneticAlgorithm {
 		this.isLearningOn = shouldLearn;
 		randomGenerator = new Random();
 		
-		//TODO: read in xml data 
-		
-		
-		/*
-		//test for crossover and mutation
-		Chromosome p1 = new Chromosome(2000.0, 400, 300, 1000, 5.0, 0.04);
-		Chromosome p2 = new Chromosome(500.0, 1400, 100, 700, 5.0, 0.14);
-		
-		Generation newGen = generateNewGeneration(crossoverParentGenes(p1, p2));
-		for(Chromosome c : newGen.getGeneration()){
-			System.out.println(c);
+		Chromosome chromosome = null;
+
+		//Read XML Data
+		XStream xstream = new XStream();
+		xstream.alias("Generation", Generation.class);
+
+		try { 
+			generation = (Generation) xstream.fromXML(new File("ohar8139/generation.xml"));
+			System.out.println("Generation size" + generation.getGeneration().size());
+		} catch (XStreamException e) {
+			// if you get an error, handle it other than a null pointer because
+			// the error will happen the first time you run
+			chromosome = new Chromosome(2000.0, 400, 300, 1000, 5.0, 0.04);
+			generation.add(chromosome);
 		}
-		*/
+		
+		
+		//Set Best Chromosome for tests
+		//Set the first one just to have a comparison
+		bestChromosome = generation.getGeneration().get(0);
+		for (Chromosome c : generation.getGeneration()){
+			if(c.getMoneyCollected() > bestChromosome.getMoneyCollected()){
+				bestChromosome = c;
+			}
+		}
+		
+		//Set the current chromosome to test against.
+		int sizeofGeneration = generation.getGeneration().size();
+		currentChromosome = generation.getGeneration().get(sizeofGeneration-1);
+		
 		
 	}
 	
@@ -58,18 +85,74 @@ public class GeneticAlgorithm {
 		if(!isLearningOn) return;
 		
 		//find how many points the team scored using the reference to space
+		//Add current client to the generation
+				//But first add its money to the gene, this will be used to base performance
+		double MoneyCollected = -1;
+		Set<ImmutableTeamInfo> allTeams = space.getTeamInfo();
+		for (ImmutableTeamInfo team : allTeams){
+				if(team.getTeamName().equalsIgnoreCase("WesandRick")){
+					MoneyCollected = team.getScore();		
+				}
+		}
+		currentChromosome.setMoneyCollected(MoneyCollected);
+		generation.add(currentChromosome);
 		
 		//compare against the bestChromosome... update bestChromosome if the current is better
+		if(currentChromosome.getMoneyCollected() > bestChromosome.getMoneyCollected()){
+			bestChromosome = currentChromosome;
+		}
 		
 		//if the currentChromosome is the last of the generation that needs to be tested,
 			//select best from the generation, crossover using the best, then generate a new generation and update the chromosomes vector
+		if(generation.getGeneration().size() >= CHROM_PER_GEN){
+			//Run the selection and crossover methods, Generate the new generation and output the new gen
+			Generation parents = selectionFunction(generation);
+			Chromosome newChrom = crossoverParentGenes(parents.getGeneration().get(0), parents.getGeneration().get(1));
+			
+			//Create the new generation to run.
+			Generation newGen = generateNewGeneration(newChrom);
+			newGen.setGenerationNumber(parents.getGenerationNumber());
+			
+			//To XML, rename the old gen as GenX.xml and the new one, CurrentGen.xml
+			//Add +1 to generation number for new generation number.
+			XStream xstream = new XStream();
+			xstream.alias("Generation", Generation.class);
+
+			try { 
+				// if you want to compress the file, change FileOuputStream to a GZIPOutputStream
+				xstream.toXML(generation, new FileOutputStream(new File("ohar8139/"+generation.getGenerationNumber()+".xml")));
+			} catch (XStreamException e) {
+				// if you get an error, handle it somehow as it means your knowledge didn't save
+				// the error will happen the first time you run
+				
+			} catch (FileNotFoundException e) {
+				
+			}
+			
+			generation = newGen;
+			
+			//update the currentChromosome to prepare for the next run
+			currentChromosome = newChrom;
+			
+		}
+
 		
-		//update the currentChromosome to prepare for the next run
 		
 		//write the generation xml to disc
-		
-		//write out the performance stats to disc (performance of generations over time)
-		//Wesley: are we using xml or text to save the results that we will be graphing?
+		XStream xstream = new XStream();
+		xstream.alias("Generation", Generation.class);
+
+		try { 
+			// if you want to compress the file, change FileOuputStream to a GZIPOutputStream
+			xstream.toXML(generation, new FileOutputStream(new File("ohar8139/generation.xml")));
+		} catch (XStreamException e) {
+			// if you get an error, handle it somehow as it means your knowledge didn't save
+			// the error will happen the first time you run
+			
+		} catch (FileNotFoundException e) {
+			
+			
+		}
 	}
 	
 	/**
@@ -148,13 +231,6 @@ public class GeneticAlgorithm {
 		return min + (randomGenerator.nextDouble() * (max - min));
 	}
 	
-	/**
-	 * Fitness function for gauging how a client has performed.
-	 * @param chromosome
-	 */
-	private void fitnessFunction(Chromosome chromosome){
-		
-	}
 	
 	/**
 	 * Selection function two select two parents for the crossover function.
@@ -192,6 +268,7 @@ public class GeneticAlgorithm {
 		Generation newGeneration = new Generation();
 		newGeneration.add(generation.getGeneration().get(indexOfMax1));
 		newGeneration.add(generation.getGeneration().get(indexOfMax2));
+		newGeneration.setGenerationNumber(newGeneration.getGenerationNumber()+1);
 		
 		return newGeneration;
 		

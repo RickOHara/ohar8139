@@ -392,19 +392,6 @@ public class WesleyRickClient extends TeamClient {
 		Chromosome thisChrom = geneticAlgorithm.getChromosomeForKnowledgeRepresentation();
 		knowledgeValues = new KnowledgeValues(thisChrom);
 		
-		//TODO: move xml parsing to the GeneticAlgorithm constructor
-		XStream xstream = new XStream();
-		xstream.alias("Generation", Generation.class);
-
-		try { 
-			generation = (Generation) xstream.fromXML(new File("ohar8139/generation.xml"));
-			System.out.println("Generation size" + generation.getGeneration().size());
-		} catch (XStreamException e) {
-			// if you get an error, handle it other than a null pointer because
-			// the error will happen the first time you run
-			chromosome = new Chromosome(2000.0, 400, 300, 1000, 5.0, 0.04);
-			generation.add(chromosome);
-		}
 	}
 
 	/**
@@ -416,40 +403,6 @@ public class WesleyRickClient extends TeamClient {
 		//perform final tasks of the genetic algorithm before shutting down
 		geneticAlgorithm.analyzeResults(space);
 		
-		
-		//TODO: move the following code inside of the GeneticAlgorithm class:
-		//Add current client to the generation
-		//But first add its money to the gene, this will be used to base performance
-		double MoneyCollected = -1;
-		Set<ImmutableTeamInfo> allTeams = space.getTeamInfo();
-		for (ImmutableTeamInfo team : allTeams){
-			System.out.println(team.getTeamName().equalsIgnoreCase("Wesley and Rick"));
-			System.out.println(team.getTeamName());
-			if(team.getTeamName().equalsIgnoreCase("WesandRick")){
-				MoneyCollected = team.getScore();
-				
-			}
-		}
-		
-		
-		chromosome.setMoneyCollected(MoneyCollected);
-		generation.add(chromosome);
-		
-		XStream xstream = new XStream();
-		xstream.alias("Generation", Generation.class);
-
-		try { 
-			// if you want to compress the file, change FileOuputStream to a GZIPOutputStream
-			xstream.toXML(generation, new FileOutputStream(new File("ohar8139/generation.xml")));
-		} catch (XStreamException e) {
-			// if you get an error, handle it somehow as it means your knowledge didn't save
-			// the error will happen the first time you run
-			
-		} catch (FileNotFoundException e) {
-			
-			
-		}
-
 	}
 
 	@Override
