@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 public class Generation {
 	
+	private int currentIndex;
 	private int GenerationNumber;
 	private ArrayList<Chromosome> generation;
 	
+	
 	public Generation(){
+		setCurrentIndex(0);
 		generation = new ArrayList<Chromosome>();
 		setGenerationNumber(0);
 	}
@@ -35,5 +38,22 @@ public class Generation {
 	public void setGenerationNumber(int generationNumber) {
 		GenerationNumber = generationNumber;
 	}
+
+	public int getCurrentIndex() {
+		return currentIndex;
+	}
+
+	public void setCurrentIndex(int currentIndex) {
+		this.currentIndex = currentIndex;
+	}
+	
+	public void setMoney(int money, int index){
+		generation.get(index).setMoneyCollected(money);
+	}
+	
+	public void setChromosomeAtIndex(int index, Chromosome c){
+		generation.set(index, c);
+	}
+
 	
 }

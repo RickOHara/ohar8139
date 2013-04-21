@@ -66,8 +66,7 @@ public class GeneticAlgorithm {
 		}
 		
 		//Set the current chromosome to test against.
-		int sizeofGeneration = generation.getGeneration().size();
-		currentChromosome = generation.getGeneration().get(sizeofGeneration-1);
+		currentChromosome = generation.getGeneration().get(generation.getCurrentIndex());
 		
 		
 	}
@@ -95,7 +94,7 @@ public class GeneticAlgorithm {
 				}
 		}
 		currentChromosome.setMoneyCollected(MoneyCollected);
-		generation.add(currentChromosome);
+		generation.setChromosomeAtIndex(generation.getCurrentIndex(), currentChromosome);
 		
 		//compare against the bestChromosome... update bestChromosome if the current is better
 		if(currentChromosome.getMoneyCollected() > bestChromosome.getMoneyCollected()){
@@ -104,14 +103,14 @@ public class GeneticAlgorithm {
 		
 		//if the currentChromosome is the last of the generation that needs to be tested,
 			//select best from the generation, crossover using the best, then generate a new generation and update the chromosomes vector
-		if(generation.getGeneration().size() >= CHROM_PER_GEN){
+		if(generation.getGeneration().size() >= CHROM_PER_GEN && generation.getCurrentIndex()>=generation.getGeneration().size()-1 ){
 			//Run the selection and crossover methods, Generate the new generation and output the new gen
 			Generation parents = selectionFunction(generation);
 			Chromosome newChrom = crossoverParentGenes(parents.getGeneration().get(0), parents.getGeneration().get(1));
 			
 			//Create the new generation to run.
 			Generation newGen = generateNewGeneration(newChrom);
-			newGen.setGenerationNumber(parents.getGenerationNumber());
+			newGen.setGenerationNumber(parents.getGenerationNumber()+1);
 			
 			//To XML, rename the old gen as GenX.xml and the new one, CurrentGen.xml
 			//Add +1 to generation number for new generation number.
@@ -130,13 +129,15 @@ public class GeneticAlgorithm {
 			}
 			
 			generation = newGen;
+			generation.setGenerationNumber(generation.getGenerationNumber() + 1);
 			
 			//update the currentChromosome to prepare for the next run
 			currentChromosome = newChrom;
 			
+		}else{
+			//Update the currentChromosome index to prepare for the next run
+			generation.setCurrentIndex(generation.getCurrentIndex()+1);
 		}
-
-		
 		
 		//write the generation xml to disc
 		XStream xstream = new XStream();
