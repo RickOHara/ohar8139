@@ -49,15 +49,15 @@ import ohar8139.GeneticAlgorithm;
  * @author Wesley R. Howell
  */
 public class WesleyRickClient extends TeamClient {
-	private Chromosome chromosome = new Chromosome(0, 0, 0, 0, 0, 0);
-	private Generation generation = new Generation();
+	//private Chromosome chromosome = null;//new Chromosome(0, 0, 0, 0, 0, 0);
+	//private Generation generation = new Generation();
 	
 	HashMap <UUID, Ship> asteroidToShipMap;
 	boolean aimingForBase;
 	Graph astarGraph;
 	//Map <KnowledgeEnum, Boolean> knowledgeValues;
 	KnowledgeValues knowledgeValues;
-	GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(true);
+	GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(true);//true == learning is on
 
 	/**
 	 * Assigns ships to asteroids and beacons, as described above

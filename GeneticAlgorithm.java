@@ -76,7 +76,6 @@ public class GeneticAlgorithm {
 		return bestChromosome;
 	}
 	
-	//TODO: implement method stub
 	//called in the shutdown method of the client
 	public void analyzeResults(Toroidal2DPhysics space){
 		
@@ -220,6 +219,12 @@ public class GeneticAlgorithm {
 			nextGeneration.add(new Chromosome(cFuelVal, cShipVal, cNearbyVal, cMoneyVal, 
 					cPositiveVal, cEnergyVal));
 		}
+		
+		//print new generation to verify calculations are working
+		System.out.println("New generation:");
+		System.out.println("*****************");
+		for(Chromosome c : nextGeneration.getGeneration()) System.out.println(c);
+		System.out.println("*****************");
 		
 		return nextGeneration;
 	}
