@@ -3,6 +3,7 @@ package ohar8139;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
@@ -15,18 +16,30 @@ import spacewar2.simulator.Toroidal2DPhysics;
 
 import ohar8139.Chromosome;
 
+/**
+ * Genetic algorithm
+ * This class will contain the functions necessary in order to perform evolutionary computation in spacewar.
+ * 
+ * @author Wesley Howell
+ *
+ */
 public class GeneticAlgorithm {
 
+	//Create the generation to work with
 	private Generation generation = new Generation(); //all chromosomes in the current generation
 	
+	//Static values for each generation. Each generation will have 10 children and each one will get
+	//at most 3 runs on the ladder
 	private final int CHROM_PER_GEN = 10;//number of child chromosomes to be created per generations
 	private final int RUNS_PER_CHROM = 3;//number of runs of the ladder to test each child chromosome
 	
+	//Variable to contain the current chromosome data that is running on the ladder
 	private Chromosome currentChromosome = null;//current chromosome being tested
 	private int numChromosomeRuns;//number of testing rounds that the current chromosome has been through
 	
-	//private Vector<Chromosome> chromosomes;//all chromosomes of the current generation
+	//private Vector<Chromosome> chromosomes;//all chromosomes of the current generation //Deprecated with the Generation class
 	
+	//Value to store the best chromosome in the generation so far.
 	private Chromosome bestChromosome = null;//the best overall chromosome that has been found through learning across all generations
 	
 	//determines whether this run should be 
@@ -34,6 +47,14 @@ public class GeneticAlgorithm {
 	
 	Random randomGenerator;//used for mutation and crossover
 	
+	/**
+	 * Genetic Algorithm constructor
+	 * If the user sets learning to TRUE, the constructor will load up the XML file called generation.xml in the 4x4 package directory
+	 * If this file is not present, we will start learning from scratch with standard default values from previous projects.
+	 * 
+	 * If Learning is set to FALSE, we will just use the default values for the chromosome and not run the genetic algorithms.
+	 * @param shouldLearn
+	 */
 	GeneticAlgorithm(boolean shouldLearn){
 		
 		this.isLearningOn = shouldLearn;
@@ -71,11 +92,26 @@ public class GeneticAlgorithm {
 		
 	}
 	
+	/**
+	 * Returns the current Chromosome if learning is on, or best chromosome if learning is set to false
+	 * This is necessary for the knowledge representation class developed in project 2 since we modified it
+	 * to rely on the genetic algorithms.
+	 * @return
+	 */
 	public Chromosome getChromosomeForKnowledgeRepresentation(){
 		if(isLearningOn) return currentChromosome;
 		return bestChromosome;
 	}
 	
+	/**
+	 * analyze results
+	 * Analyzes the performace of the agent in the current run of the ladder. 
+	 * If an agent has outperformed the best chromosome, it is then set to be the best chromosome
+	 * If not, its score is added to the generation. 
+	 * 
+	 * Once a generation is complete it will output the generation in an XML file with a unique file name. This will give a single file for each generation
+	 * @param space
+	 */
 	//called in the shutdown method of the client
 	public void analyzeResults(Toroidal2DPhysics space){
 		
@@ -118,7 +154,10 @@ public class GeneticAlgorithm {
 
 			try { 
 				// if you want to compress the file, change FileOuputStream to a GZIPOutputStream
-				xstream.toXML(generation, new FileOutputStream(new File("ohar8139/"+generation.getGenerationNumber()+".xml")));
+				String unique = (new Date().toString());
+				unique = unique.replace(' ', '_');
+				unique = unique.replace(':', '_');
+				xstream.toXML(generation, new FileOutputStream(new File("howe0479/"+generation.getGenerationNumber()+"_"+unique+".xml")));
 			} catch (XStreamException e) {
 				// if you get an error, handle it somehow as it means your knowledge didn't save
 				// the error will happen the first time you run

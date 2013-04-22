@@ -382,14 +382,19 @@ public class WesleyRickClient extends TeamClient {
 
 	/**
 	 * Initializes the ships turn on the first step
+	 * 
+	 * Sets up the genetic algorithm
 	 */
 	@Override
 	public void initialize(Toroidal2DPhysics space) {
+		//Initialize the class variables.
 		asteroidToShipMap = new HashMap<UUID, Ship>();
 		astarGraph = new Graph();
 		
 		//set the Chromosome based on the state of the genetic algorithm
 		Chromosome thisChrom = geneticAlgorithm.getChromosomeForKnowledgeRepresentation();
+		
+		//generate the knowledge values based on the chromosomes.
 		knowledgeValues = new KnowledgeValues(thisChrom);
 		
 	}
